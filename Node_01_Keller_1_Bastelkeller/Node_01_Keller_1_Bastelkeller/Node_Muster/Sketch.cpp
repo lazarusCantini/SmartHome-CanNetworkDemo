@@ -1,5 +1,8 @@
 ﻿/*ToDO:
 uint32_t SetzeIDZusammen(uint8_t *CAN_Array) scheint die ID nicht korrekt zusammenzusetzten. Beheben!
+31.3.2019 scheint behoben zu sein. Wurde ausprobiert. Das Buffer Array buffer[]
+uint8_t buffer[] = {0xAB, 0xCD, 0xEF, 0x89};
+wird zu ABCDEF89 zusammengeführt. Wurde per CodeBlocks ausprobiert
 */
 
 /*Begining of Auto generated code by Atmel studio */
