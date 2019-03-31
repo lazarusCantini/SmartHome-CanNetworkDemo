@@ -1,0 +1,62 @@
+void setup() {
+  // put your setup code here, to run once:
+  int packetSize = 0;
+	  Serial.begin(9600);
+	  while (!Serial);
+
+	  Serial.println("CAN Node");
+
+	  // start the CAN bus at 500 kbps
+	  if (!CAN.begin(500E3)) {
+		  Serial.println("Starting CAN failed!");
+		  while (1);
+	  }
+	  Serial.println("Can Nachricht wird gesendet");
+	  CAN.filterExtended(UID_KELLER_HUB, UID_MASK_ZERO);
+	  CAN.beginExtendedPacket(UID_NODE);
+	  CAN.write(Kommando_Get_HUB_ID);
+	  CAN.endPacket();
+	  Serial.println("Can Nachricht wurde gesendet");
+	  while(CAN.parsePacket() == 0)
+	  {
+		  //Endlosschleife bis die UID vom HUB empfangen wurde
+	  }
+	  if (CAN.packetId() == UID_KELLER_HUB)
+	  {
+		  if (CAN.read() == UID_KELLER_HUB)
+		  {	//Es bleibt bei der alten Keller HUB ID
+			  Serial.println("Es bleibt bei der alten Keller HUB ID");
+		  } 
+		  else
+		  {
+			  //es wurde eine neue HUB ID empfangen
+		  }
+	  } 
+	  else //Das empfangene Packet hat eine nicht erwartete ID
+	  {
+		  Serial.println("Das Paket hat eine falsche ID");
+	  }
+	  CAN_Message_detected = false;
+	  
+	  //Eine Liste der IDs vom HUB anfordern, auf die gelauscht werden soll
+	  CAN.beginExtendedPacket(UID_NODE);
+	  CAN.write(Kommando_Get_ID_LIST_FROM_HUB);
+	  CAN.endPacket();
+	  
+	  Serial.println("Die Liste aller zu belauschenden IDs");
+	  //_delay_ms(1000);
+	  while(CAN.parsePacket() == 0)
+	  {
+		  //Endlosschleife bis die UID vom HUB empfangen wurde
+	  }
+	  //int i=0;
+      //while (CAN.available()) {
+	      Serial.print(CAN.read(), HEX);
+		  Serial.print(CAN.read(), HEX);
+		  Serial.print(CAN.read(), HEX);
+		  Serial.print(CAN.read(), HEX);
+		  Serial.print(CAN.read(), HEX);
+      //}
+      Serial.println();
+	  
+}
