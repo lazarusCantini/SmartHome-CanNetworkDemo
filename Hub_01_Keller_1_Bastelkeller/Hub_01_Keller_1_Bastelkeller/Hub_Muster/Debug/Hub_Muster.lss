@@ -21,15 +21,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   8 .debug_abbrev 00002cb7  00000000  00000000  00013102  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_line   000035af  00000000  00000000  00015db9  2**0
+  9 .debug_line   00003525  00000000  00000000  00015db9  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_frame  00001294  00000000  00000000  00019368  2**2
+ 10 .debug_frame  00001294  00000000  00000000  000192e0  2**2
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_str    00002fc8  00000000  00000000  0001a5fc  2**0
+ 11 .debug_str    00003065  00000000  00000000  0001a574  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    000061e1  00000000  00000000  0001d5c4  2**0
+ 12 .debug_loc    000061e1  00000000  00000000  0001d5d9  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_ranges 000005b0  00000000  00000000  000237a5  2**0
+ 13 .debug_ranges 000005b0  00000000  00000000  000237ba  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -3932,12 +3932,6 @@ bool Serial0_available() {
     163a:	08 95       	ret
 
 0000163c <yield>:
- * libraries or sketches that supports cooperative threads.
- *
- * Its defined as a weak symbol and it can be redefined to implement a
- * real cooperative scheduler.
- */
-static void __empty() {
     163c:	08 95       	ret
 
 0000163e <initVariant>:

@@ -8,6 +8,7 @@
 #include <stdint.h>
 
 #include <Arduino.h>
+#include <math.h>
 /*Die Funktion ID_Zusammensetzen nimmt 4 aufeinander folgende
 je 8Bit großen Can-Datentelegramme, und setzt daraus eine
 32-Bit lange CAN UID zusammen:
@@ -56,4 +57,38 @@ uint32_t ID_Maske_berechnen (uint32_t *_ID_Liste, uint8_t ID_list_lenght)
 		Maske = Maske | _ID_Liste[i];
 	}
 	return Maske;
+}
+
+//Die Funktion ist nötig zum Debugging, da eine Serielle Datenausgabe der ID mittels Serial.println(ID, BIN); keine führende Nullen ausgibt
+void ID_Ausgeben(uint32_t ID)
+{
+	uint32_t rest = ID;
+	for (int i=31; i>=0; i--)
+	{
+		if (i==0)
+		{
+			if (rest ==1)
+			{
+				Serial.write('1');
+			} 
+			else
+			{
+				Serial.write('0');
+			}
+		} 
+		else
+		{
+			if (rest >= pow(2, i))
+			{
+				Serial.write('1');
+				rest = rest - pow(2,i);
+			}
+			else
+			{
+				Serial.write('0');
+			}
+			
+		}
+
+	}
 }

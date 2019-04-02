@@ -24,5 +24,7 @@
 
 uint32_t ID_Zusammensetzen (uint8_t *_8Bit_array/*, uint32_t *Zeiger*/);
 uint32_t ID_Maske_berechnen (uint32_t *_ID_Liste, uint8_t ID_list_lenght);
+//Die Funktion ist nötig zum Debugging, da eine Serielle Datenausgabe der ID mittels Serial.println(ID, BIN); keine führende Nullen ausgibt
+void ID_Ausgeben(uint32_t ID);
 
 #endif /* HAUSBUS_H_ */

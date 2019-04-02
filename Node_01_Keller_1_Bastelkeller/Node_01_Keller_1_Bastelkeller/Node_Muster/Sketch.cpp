@@ -111,7 +111,8 @@ void setup() {
 				buffer[3] = 0;
 				*/
 				ID = ID_Zusammensetzen(buffer);
-				Serial.println(ID, BIN);
+				//ID_Ausgeben(ID);
+				//Serial.println("ID fertig");
 				if (ID == 0) //Falls in der CAN Nachricht eine 0x0000 steht, zeigt das an, dass die UID Liste komplett übertragen wurde
 				{
 					CAN_UID_LIST_Complete = true;
@@ -128,7 +129,11 @@ void setup() {
 				//Testausgaben aller UIDs
 				for (int i=0; i<=ID_List_numerator; i++)
 				{
+					Serial.print("Ausgabe Arduino: ");
 					Serial.println(CAN_UID_List[i], BIN);
+					Serial.print("Ausgabe eigene Funktion: ");
+					ID_Ausgeben(CAN_UID_List[i]);
+					Serial.println(" ");
 				}
 				Serial.print("Es wurden insgesammt ");
 				Serial.print(ID_List_numerator);
