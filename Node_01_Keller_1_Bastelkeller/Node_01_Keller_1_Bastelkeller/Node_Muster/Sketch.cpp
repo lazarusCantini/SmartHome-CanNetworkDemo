@@ -177,6 +177,18 @@ void loop() {
 
 	  Serial.print("packet with id 0x");
 	  Serial.print(CAN.packetId(), HEX);
+	  
+	  switch(CAN.packetId())
+	  {
+			case  ID_01_Keller_1_Bastelkeller_Licht:
+				//Licht schalten
+				break;
+				
+			default:
+				//keine passende ID gefunden
+				Serial.println("Keine passende ID im System");
+				break;
+	  }
 
 	  if (CAN.packetRtr()) {
 		  Serial.print(" and requested length ");
