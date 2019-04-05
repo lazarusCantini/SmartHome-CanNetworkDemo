@@ -18,6 +18,7 @@ wird zu ABCDEF89 zusammengeführt. Wurde per CodeBlocks ausprobiert
 #include <avr/eeprom.h>
 #include "Hausbus.h"
 #include "CAN.h"
+#include "Pin_ATMEGA328.h"
 //UID Keller Node Bastelkeller	0b 001 001 001 011 0 0000 00000000 0 
 //UID Keller HUB				0b 001 001 000 000 0 0000 00000000 0
 
@@ -30,6 +31,9 @@ bool CAN_UID_LIST_Complete = false;
 
 bool CAN_Message_detected = false;
 
+Pin LED_Rot('C', 5, false);
+Pin LED_Gruen('C', 6, false);
+Pin LED_Blau('C', 7, false);
 
 
 void setup() {
@@ -145,7 +149,9 @@ void setup() {
 	//ID_Maske_berechnen(CAN_UID_List);
 	CAN.filterExtended(ID_Maske_berechnen(CAN_UID_List, 2), UID_MASK_ONE);
 	
-				
+	LED_Rot.setze_Status(false);
+	LED_Gruen.setze_Status(false);
+	LED_Blau.setze_Status(true);			
 	
 }
 
