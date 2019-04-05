@@ -7,6 +7,12 @@ Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "Node_Muster", "Node_01_Kell
 EndProject
 Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "ArduinoCore", "Node_01_Keller_1_Bastelkeller\ArduinoCore\ArduinoCore.cppproj", "{8D0812F6-B1B9-4A67-B5EF-73561038D2DB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5541E8BB-AE77-4619-A950-80B33D9D345D}"
+	ProjectSection(SolutionItems) = preProject
+		Node_01_Keller_1_Bastelkeller\Pin_ATMEGA328.cpp = Node_01_Keller_1_Bastelkeller\Pin_ATMEGA328.cpp
+		Node_01_Keller_1_Bastelkeller\Pin_ATMEGA328.h = Node_01_Keller_1_Bastelkeller\Pin_ATMEGA328.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
