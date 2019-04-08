@@ -104,12 +104,13 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 	_delay_ms(2000);
-	  CAN.beginExtendedPacket(ID_01_Keller_1_Bastelkeller_Lichtschalter);
-	  CAN.write('w');
+	  CAN.beginExtendedPacket(ID_01_Keller_1_Bastelkeller_Licht);
+	  CAN.write(Kommando_Licht_toggle);
+	/*  CAN.write('w');
 	  CAN.write('o');
 	  CAN.write('r');
 	  CAN.write('l');
-	  CAN.write('d');
+	  CAN.write('d');*/
 	  CAN.endPacket();
 
 	  Serial.println("done");

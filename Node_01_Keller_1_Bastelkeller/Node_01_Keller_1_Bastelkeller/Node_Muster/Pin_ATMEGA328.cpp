@@ -24,6 +24,7 @@ Pin::Pin(char PublicPort, uint8_t Public_Nummer_Pin, bool Eingang)
 	setze_PinNummer(Public_Nummer_Pin);
 	setze_Richtung(Eingang);
 	initialisierePin();  
+	merke_status(false);
 }
 
 void Pin::merke_status(bool status)
@@ -45,7 +46,12 @@ void Pin::toggle_Pin()
 
 bool Pin::lese_status()
 {
-
+	if(!private_Eingang) //Der Pin ist ein Ausgang, dementsprechend ist der Status derjenige, der als letztes definiert wurde
+	{
+		
+	}
+	else
+	{
 		if (private_Port == 'B')
 		{
 			switch(private_Nummer_Pin)
@@ -205,6 +211,7 @@ bool Pin::lese_status()
 				{merke_status(false);}
 				break;			}
 		}
+	}
 	return status_intern;
 }	
 	

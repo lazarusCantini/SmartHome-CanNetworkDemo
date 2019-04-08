@@ -31,9 +31,9 @@ bool CAN_UID_LIST_Complete = false;
 
 bool CAN_Message_detected = false;
 
-Pin LED_Rot('C', 5, false);
-Pin LED_Gruen('C', 6, false);
-Pin LED_Blau('C', 7, false);
+Pin LED_Rot('D', 5, false);
+Pin LED_Gruen('D', 6, false);
+Pin LED_Blau('D', 7, false);
 
 
 void setup() {
@@ -147,11 +147,17 @@ void setup() {
 				
 	//Nachdem alle zu belauschenden IDs empfangen wurde, wird die Maske berechnet und auf den CAN Controller angewandt
 	//ID_Maske_berechnen(CAN_UID_List);
-	CAN.filterExtended(ID_Maske_berechnen(CAN_UID_List, 2), UID_MASK_ONE);
-	
+	Serial.println("Can Maske wird berechnet");
+	uint32_t Maske = ID_Maske_berechnen(CAN_UID_List, 2);
+	Serial.print("Maske: ");
+	Serial.println(Maske, BIN);
+	//CAN.filterExtended(ID_Maske_berechnen(CAN_UID_List, 2), UID_MASK_ONE);
+	CAN.filterExtended(CAN_UID_List[1], UID_MASK_ONE);
+	Serial.println("Can Filtermaske wurde angewandt");
 	LED_Rot.setze_Status(false);
 	LED_Gruen.setze_Status(false);
 	LED_Blau.setze_Status(true);			
+	Serial.println("LEds wurden gesetzt");
 	
 }
 
@@ -160,6 +166,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   // try to parse packet
+ // Serial.println("Run on loop");
   int packetSize = CAN.parsePacket();
 
   if (packetSize) {
@@ -176,12 +183,31 @@ void loop() {
 	  }
 
 	  Serial.print("packet with id 0x");
-	  Serial.print(CAN.packetId(), HEX);
+	  Serial.println(CAN.packetId(), HEX);
 	  
 	  switch(CAN.packetId())
 	  {
 			case  ID_01_Keller_1_Bastelkeller_Licht:
 				//Licht schalten
+				Serial.println("Licht wird geschaltet");
+				switch(CAN.read())
+				{
+					case Kommando_Licht_an:
+						LED_Rot.setze_Status(true);
+						Serial.println("Licht wird geschaltet an");
+						break;
+					case Kommando_Licht_aus:
+						LED_Rot.setze_Status(false);
+						Serial.println("Licht wird geschaltet aus");
+						break;
+					case Kommando_Licht_toggle:
+						LED_Rot.toggle_Pin();
+						Serial.println("Licht wird getoggelt");
+						break;
+					default:
+						Serial.println("Unbekannter Befehl an ID_01_Keller_Licht");
+						break;
+				}
 				break;
 				
 			default:

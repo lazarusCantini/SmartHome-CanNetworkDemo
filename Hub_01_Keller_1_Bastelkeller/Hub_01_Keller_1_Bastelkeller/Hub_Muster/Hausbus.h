@@ -30,5 +30,8 @@ uint8_t *Zeiger_auf_UID_Liste_EndeIndikator = UID_Liste_EndeIndikator;
 #define Kommando_Get_HUB_ID 1 
 #define Kommando_Get_ID_LIST_FROM_HUB 2 
 
+#define Kommando_Licht_an 1
+#define Kommando_Licht_aus 2
+#define Kommando_Licht_toggle 3
 
 #endif /* HAUSBUS_H_ */

@@ -12,12 +12,19 @@
 
 #define UID_KELLER_HUB	0b00100100000000000000000000
 #define UID_NODE		0b00100100101100000000000000
-#define UID_MASK_ONE	0b11111111111111111111111111
-#define UID_MASK_ZERO	0b00000000000000000000000000
+//#define UID_MASK_ONE	0b11111111111111111111111111
+#define UID_MASK_ONE	0x1fffffff
+#define UID_MASK_ZERO	0x00000000
 #define ID_01_Keller_1_Bastelkeller_Licht 0b00000011001001001011000000000000
+
+
 
 #define Kommando_Get_HUB_ID 1 
 #define Kommando_Get_ID_LIST_FROM_HUB 2 
+
+#define Kommando_Licht_an 1
+#define Kommando_Licht_aus 2
+#define Kommando_Licht_toggle 3
 
 #define ID_LIST_MAXIMUM 20
 
