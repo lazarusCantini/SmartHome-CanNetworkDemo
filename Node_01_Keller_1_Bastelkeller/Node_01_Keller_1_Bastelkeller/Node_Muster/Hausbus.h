@@ -15,8 +15,13 @@
 //#define UID_MASK_ONE	0b11111111111111111111111111
 #define UID_MASK_ONE	0x1fffffff
 #define UID_MASK_ZERO	0x00000000
-#define ID_01_Keller_1_Bastelkeller_Licht 0b00000011001001001011000000000000
-
+#define ID_01_Keller_1_Bastelkeller_Licht_ROT			0b00000011001001001011000000000000
+#define ID_01_Keller_1_Bastelkeller_Licht_GRUEN			0b00000011001001001011100000000000
+#define ID_01_Keller_1_Bastelkeller_Licht_BLAU			0b00000011001001001010100000000000
+#define ID_01_Keller_1_Bastelkeller_Licht				0b00000011001001001011000000000000
+#define ID_02_Keller_1_Bastelkeller_Lichtschalter_ROT	0b00100100101100000000000000000001
+#define ID_02_Keller_1_Bastelkeller_Lichtschalter_Gruen	0b00100100101100000000000000000010
+#define ID_02_Keller_1_Bastelkeller_Lichtschalter_BLAU	0b00100100101100000000000000000011
 
 
 #define Kommando_Get_HUB_ID 1 
