@@ -1,0 +1,1 @@
+"C:\Program Files (x86)\Arduino\hardware\tools\avr\bin\avrdude.exe" -C "C:\Program Files (x86)\Arduino\hardware\tools\avr\etc\avrdude.conf" -v -patmega328p -carduino -PCOM5 -b115200 -D -Uflash:w:"C:\Users\Basti\Documents\Arduino\SmartHome-CanNetworkDemo\Node_01_Keller_1_Bastelkeller\Node_01_Keller_1_Bastelkeller\Node_Muster\Debug\Node_Muster.hex":i
