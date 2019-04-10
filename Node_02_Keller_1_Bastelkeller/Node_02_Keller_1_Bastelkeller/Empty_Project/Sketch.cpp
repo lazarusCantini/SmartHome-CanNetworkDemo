@@ -13,12 +13,47 @@
 #include "Hausbus.h"
 #include "CAN.h"
 #include "Pin_ATMEGA328.h"
+#include "Taster.h"
 
 uint32_t EEPROM_UID_NODE EEMEM = UID_NODE;
 uint32_t EEPROM_UID_KELLER_HUB EEMEM = UID_KELLER_HUB;
 
 uint32_t CAN_Buffer[20];
-uint32_t CAN_UID_List[20];
+uint32_t CAN_UID_List[20] = {
+			/*	0	*/					ID_02_Keller_1_Bastelkeller_Lichtschalter_ROT,
+			/*	1	*/					ID_02_Keller_1_Bastelkeller_Lichtschalter_Gruen,
+			/*	2	*/					ID_02_Keller_1_Bastelkeller_Lichtschalter_BLAU,
+			/*	3	*/					UID_MASK_ZERO,
+			/*	4	*/					UID_MASK_ZERO,
+			/*	5	*/					UID_MASK_ZERO,
+			/*	6	*/					UID_MASK_ZERO,
+			/*	7	*/					UID_MASK_ZERO,
+			/*	8	*/					UID_MASK_ZERO,
+			/*  9	*/					UID_MASK_ZERO,
+			/* 10	*/					UID_MASK_ZERO,
+			/* 11	*/					UID_MASK_ZERO,
+			/* 12	*/					UID_MASK_ZERO,
+			/* 13	*/					UID_MASK_ZERO,
+			/* 14	*/					UID_MASK_ZERO,
+			/* 15	*/					UID_MASK_ZERO,
+			/* 16	*/					UID_MASK_ZERO,
+			/* 17	*/					UID_MASK_ZERO,
+			/* 18	*/					UID_MASK_ZERO,
+			/* 19	*/					UID_MASK_ZERO
+
+};
+
+#define TasterEntprellenMS 300
+
+Pin PinFuerTaster_1('B', 0, true);
+Taster Taster_1(PinFuerTaster_1, true);
+Pin PinFuerTaster_2('B', 1, true);
+Taster Taster_2(PinFuerTaster_2, true);
+
+volatile uint8_t portBhistory = 0xFF;
+volatile uint8_t portChistory = 0xFF;
+volatile uint8_t portDhistory = 0xFF;
+
 bool CAN_UID_LIST_Complete = false;
 
 bool CAN_Message_detected = false;
@@ -36,121 +71,33 @@ void setup() {
 		  Serial.println("Starting CAN failed!");
 		  while (1);
 	  }
-	  Serial.println("Can Nachricht wird gesendet");
-	  CAN.filterExtended(UID_KELLER_HUB, UID_MASK_ZERO);
-	  CAN.beginExtendedPacket(UID_NODE);
-	  CAN.write(Kommando_Get_HUB_ID);
-	  CAN.endPacket();
-	  Serial.println("Can Nachricht wurde gesendet");
-	  while(CAN.parsePacket() == 0)
-	  {
-		  //Endlosschleife bis die UID vom HUB empfangen wurde
-	  }
-	  if (CAN.packetId() == UID_KELLER_HUB)
-	  {
-		  if (CAN.read() == UID_KELLER_HUB)
-		  {	//Es bleibt bei der alten Keller HUB ID
-			  Serial.println("Es bleibt bei der alten Keller HUB ID");
-		  } 
-		  else
-		  {
-			  //es wurde eine neue HUB ID empfangen
-		  }
-	  } 
-	  else //Das empfangene Packet hat eine nicht erwartete ID
-	  {
-		  Serial.println("Das Paket hat eine falsche ID");
-	  }
-	  CAN_Message_detected = false;
-	  while (CAN.parsePacket() != 0)
-	  {
-		  CAN.read();
-		  Serial.println("Dummy Nachricht weglesen");
-	  }
-	  
-	  //Eine Liste der IDs vom HUB anfordern, auf die gelauscht werden soll
-	  CAN.beginExtendedPacket(UID_NODE);
-	  CAN.write(Kommando_Get_ID_LIST_FROM_HUB);
-	  CAN.endPacket();
-	  
-	  Serial.println("Die Liste aller zu belauschenden IDs");
-	  //_delay_ms(1000);
-		uint8_t buffer[4];
-		uint8_t ID_List_numerator = 0;
-		uint32_t ID = 0;
-		uint32_t temp = 0;
-		while((CAN_UID_LIST_Complete == false) && (ID_List_numerator < ID_LIST_MAXIMUM))
-		{
-				while(CAN.parsePacket() == 0)
-				{
-					//Endlosschleife bis die UID vom HUB empfangen wurde
-				}					
-				CAN.readBytes(buffer, 4);
-
-						//uint32_t *Zeiger_auf_ID = &ID;
-						//Serial.println(ID_Zusammensetzen(buffer), BIN);
-						//Zeiger_auf_ID = ID_Zusammensetzen(buffer, Zeiger_auf_ID);
-						//Serial.println(Zeiger_auf_ID, BIN);
-			/*	for (int i=0; i<4; i++)
-				{
-					temp = buffer[i];
-					ID = ID + (temp << (8*(3-i)));
-				}
-				buffer[0] = 0;
-				buffer[1] = 0;
-				buffer[2] = 0;
-				buffer[3] = 0;
-				*/
-				ID = ID_Zusammensetzen(buffer);
-				//ID_Ausgeben(ID);
-				//Serial.println("ID fertig");
-				if (ID == 0) //Falls in der CAN Nachricht eine 0x0000 steht, zeigt das an, dass die UID Liste komplett übertragen wurde
-				{
-					CAN_UID_LIST_Complete = true;
-					Serial.println("Uebertragung der UID Liste beendet");
-				}
-				else
-				{
-					CAN_UID_List[ID_List_numerator] = ID;
-					ID_List_numerator++;
-				}
-				ID = 0;
-			
-		}
-				//Testausgaben aller UIDs
-				for (int i=0; i<=ID_List_numerator; i++)
-				{
-					Serial.print("Ausgabe Arduino: ");
-					Serial.println(CAN_UID_List[i], BIN);
-					Serial.print("Ausgabe eigene Funktion: ");
-					ID_Ausgeben(CAN_UID_List[i]);
-					Serial.println(" ");
-				}
-				Serial.print("Es wurden insgesammt ");
-				Serial.print(ID_List_numerator);
-				Serial.print(" IDs uebertragen. ");
-				Serial.println();
-				
-				
-	//Nachdem alle zu belauschenden IDs empfangen wurde, wird die Maske berechnet und auf den CAN Controller angewandt
-	//ID_Maske_berechnen(CAN_UID_List);
-	Serial.println("Can Maske wird berechnet");
-	uint32_t Maske = ID_Maske_berechnen(CAN_UID_List, 2);
-	Serial.print("Maske: ");
-	Serial.println(Maske, BIN);
-	//CAN.filterExtended(ID_Maske_berechnen(CAN_UID_List, 2), UID_MASK_ONE);
-	CAN.filterExtended(CAN_UID_List[1], UID_MASK_ONE);
+	 
+	CAN.filterExtended(CAN_UID_List[0], UID_MASK_ONE);
 	Serial.println("Can Filtermaske wurde angewandt");
-	LED_Rot.setze_Status(false);
-	LED_Gruen.setze_Status(false);
-	LED_Blau.setze_Status(true);			
-	Serial.println("LEds wurden gesetzt");
+
 }
 
 void loop() {
+	
+			if (Taster_1.StatusAenderung)
+			{
+				CAN.beginExtendedPacket(ID_01_Keller_1_Bastelkeller_Licht);
+				CAN.write(Kommando_Licht_toggle);
+				CAN.endPacket();
+				Taster_1.StatusAenderung = false;
+			}
+			if (Taster_2.StatusAenderung)
+			{
+				CAN.beginExtendedPacket(ID_01_Keller_1_Bastelkeller_Licht);
+				CAN.write(Kommando_Licht_aus);
+				CAN.endPacket();
+				Taster_2.StatusAenderung = false;
+			}
+	
 	// put your main code here, to run repeatedly:
 	// try to parse packet
 	// Serial.println("Run on loop");
+	/*
 	int packetSize = CAN.parsePacket();
 
 	if (packetSize) {
@@ -215,7 +162,7 @@ void loop() {
 		}
 
 		Serial.println();
-	}
+	}*/
 }
 
 //Wird aufgerufen wenn ein ungefiltertes CAN Paket empfangen wurde
@@ -251,4 +198,48 @@ void onReceive(int packetSize) {
 
 	Serial.println();
 	CAN_Message_detected = true;
+}
+
+ISR (PCINT0_vect)  // PCINT0_vect ist zuständig für Interrupts an den Pins B0-B7
+{
+	cli();
+	uint8_t changedbits;
+	changedbits = PINB ^ portBhistory;
+	portBhistory = PINB;
+	
+	if (changedbits & (1 << PINB0))
+	{	//Interrupt an Pin B0 erkannt
+		Taster_1.StatusAenderung = true;
+	}
+	if (changedbits & (1 << PINB1))
+	{	//Interrupt an Pin B1 erkannt
+		Taster_2.StatusAenderung = true;
+	}
+	if (changedbits & (1 << PINB2))
+	{	//Interrupt an Pin B2 erkannt
+		
+	}
+	if (changedbits & (1 << PINB3))
+	{	//Interrupt an Pin B3 erkannt
+		
+	}
+	if (changedbits & (1 << PINB4))
+	{	//Interrupt an Pin B4 erkannt
+		
+	}
+	if (changedbits & (1 << PINB5))
+	{	//Interrupt an Pin B6 erkannt
+		
+	}
+	if (changedbits & (1 << PINB6))
+	{	//Interrupt an Pin B6 erkannt
+		
+	}
+	if (changedbits & (1 << PINB7))
+	{	//Interrupt an Pin B7 erkannt
+		
+	}
+	//delay(TasterEntprellenMS);
+	_delay_ms(TasterEntprellenMS);
+	sei();
 }
